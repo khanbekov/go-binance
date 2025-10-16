@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/adshao/go-binance/v2"
+	"github.com/khanbekov/go-binance/v2"
 )
 
 func WatchMiniMarketsStat() {

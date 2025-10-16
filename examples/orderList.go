@@ -38,8 +38,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/adshao/go-binance/v2"
-	"github.com/adshao/go-binance/v2/common"
+	"github.com/khanbekov/go-binance/v2"
+	"github.com/khanbekov/go-binance/v2/common"
 )
 
 // OrderListPlaceOCO demonstrates creating an OCO order using WebSocket API

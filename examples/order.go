@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/adshao/go-binance/v2"
-	"github.com/adshao/go-binance/v2/delivery"
-	"github.com/adshao/go-binance/v2/futures"
+	"github.com/khanbekov/go-binance/v2"
+	"github.com/khanbekov/go-binance/v2/delivery"
+	"github.com/khanbekov/go-binance/v2/futures"
 )
 
 func SpotOrder() {

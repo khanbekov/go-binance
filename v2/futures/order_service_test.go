@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/adshao/go-binance/v2/common"
+	"github.com/khanbekov/go-binance/v2/common"
 
 	"github.com/stretchr/testify/suite"
 )

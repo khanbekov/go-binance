@@ -3,9 +3,9 @@ package futures
 import (
 	"testing"
 
-	"github.com/adshao/go-binance/v2/common"
-	"github.com/adshao/go-binance/v2/common/websocket/mock"
 	"github.com/golang/mock/gomock"
+	"github.com/khanbekov/go-binance/v2/common"
+	"github.com/khanbekov/go-binance/v2/common/websocket/mock"
 	"github.com/stretchr/testify/suite"
 )
 
