@@ -1745,3 +1745,20 @@ func (s *websocketServiceTestSuite) assertWsBookTickerEvent(e, a *WsBookTickerEv
 	r.Equal(e.BestAskPrice, a.BestAskPrice, "BestAskPrice")
 	r.Equal(e.BestAskQty, a.BestAskQty, "BestAskQty")
 }
+
+func (s *websocketServiceTestSuite) TestWsUserDataServeSignatureErrorWithEmptyCredentials() {
+	apiKey := ""
+	secretKey := ""
+	keyType := "HMAC"
+	timeOffset := int64(0)
+
+	handler := func(event *WsUserDataEvent) {
+	}
+
+	errHandler := func(err error) {
+	}
+
+	_, _, err := WsUserDataServeSignature(apiKey, secretKey, keyType, timeOffset, handler, errHandler)
+
+	s.r().Error(err)
+}
