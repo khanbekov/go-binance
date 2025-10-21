@@ -5,11 +5,11 @@
 package mock
 
 import (
+	"github.com/khanbekov/go-binance/v2/common/websocket"
 	reflect "reflect"
 	time "time"
 
 	gomock "github.com/golang/mock/gomock"
-	
 )
 
 // MockClient is a mock of Client interface.

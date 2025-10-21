@@ -712,7 +712,7 @@ func (s *orderServiceTestSuite) TestCancelAllOpenOrders() {
 		s.assertRequestEqual(e, r)
 	})
 
-	err := s.client.NewCancelAllOpenOrdersService().Symbol(symbol).
+	_, err := s.client.NewCancelAllOpenOrdersService().Symbol(symbol).
 		Do(newContext())
 	s.r().NoError(err)
 }
@@ -826,7 +826,7 @@ func (s *orderServiceTestSuite) TestCreateBatchOrders() {
 	s.mockDo(data, nil)
 	defer s.assertDo()
 
-	res, err := s.client.NewCreateBatchOrdersService().OrderList([]*CreateOrderService{{}, {}, {}}).Do(context.Background())
+	res, _, err := s.client.NewCreateBatchOrdersService().OrderList([]*CreateOrderService{{}, {}, {}}).Do(context.Background())
 	r := s.r()
 	r.NoError(err)
 
@@ -929,7 +929,7 @@ func (s *orderServiceTestSuite) TestModifyBatchOrders() {
 			Price("-100005.00"),
 	}
 
-	res, err := s.client.NewModifyBatchOrdersService().OrderList(orders).Do(context.Background())
+	res, _, err := s.client.NewModifyBatchOrdersService().OrderList(orders).Do(context.Background())
 
 	r := s.r()
 	r.NoError(err)

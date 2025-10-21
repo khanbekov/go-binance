@@ -721,18 +721,18 @@ func (s *CancelAllOpenOrdersService) Symbol(symbol string) *CancelAllOpenOrdersS
 }
 
 // Do send request
-func (s *CancelAllOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (err error) {
+func (s *CancelAllOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (rateLimits map[string]string, err error) {
 	r := &request{
 		method:   http.MethodDelete,
 		endpoint: "/fapi/v1/allOpenOrders",
 		secType:  secTypeSigned,
 	}
 	r.setFormParam("symbol", s.symbol)
-	_, _, err = s.c.callAPI(ctx, r, opts...)
+	_, rateLimits, err = s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return rateLimits, nil
 }
 
 // CancelMultiplesOrdersService cancel a list of orders
@@ -762,7 +762,7 @@ func (s *CancelMultiplesOrdersService) OrigClientOrderIDList(origClientOrderIDLi
 }
 
 // Do send request
-func (s *CancelMultiplesOrdersService) Do(ctx context.Context, opts ...RequestOption) (res []*CancelOrderResponse, err error) {
+func (s *CancelMultiplesOrdersService) Do(ctx context.Context, opts ...RequestOption) (res []*CancelOrderResponse, rateLimits map[string]string, err error) {
 	r := &request{
 		method:   http.MethodDelete,
 		endpoint: "/fapi/v1/batchOrders",
@@ -777,16 +777,16 @@ func (s *CancelMultiplesOrdersService) Do(ctx context.Context, opts ...RequestOp
 	if s.origClientOrderIDList != nil {
 		r.setFormParam("origClientOrderIdList", s.origClientOrderIDList)
 	}
-	data, _, err := s.c.callAPI(ctx, r, opts...)
+	data, rateLimits, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	res = make([]*CancelOrderResponse, 0)
 	err = json.Unmarshal(data, &res)
 	if err != nil {
-		return []*CancelOrderResponse{}, err
+		return []*CancelOrderResponse{}, nil, err
 	}
-	return res, nil
+	return res, rateLimits, nil
 }
 
 // ListLiquidationOrdersService list liquidation orders
@@ -994,7 +994,7 @@ func (s *CreateBatchOrdersService) OrderList(orders []*CreateOrderService) *Crea
 	return s
 }
 
-func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *CreateBatchOrdersResponse, err error) {
+func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *CreateBatchOrdersResponse, rateLimits map[string]string, err error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/fapi/v1/batchOrders",
@@ -1050,7 +1050,7 @@ func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 	}
 	b, err := json.Marshal(orders)
 	if err != nil {
-		return &CreateBatchOrdersResponse{}, err
+		return &CreateBatchOrdersResponse{}, nil, err
 	}
 	m := params{
 		"batchOrders": string(b),
@@ -1058,17 +1058,17 @@ func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 
 	r.setFormParams(m)
 
-	data, _, err := s.c.callAPI(ctx, r, opts...)
+	data, rateLimits, err := s.c.callAPI(ctx, r, opts...)
 
 	if err != nil {
-		return &CreateBatchOrdersResponse{}, err
+		return &CreateBatchOrdersResponse{}, nil, err
 	}
 
 	rawMessages := make([]*json.RawMessage, 0)
 
 	err = json.Unmarshal(data, &rawMessages)
 	if err != nil {
-		return &CreateBatchOrdersResponse{}, err
+		return &CreateBatchOrdersResponse{}, nil, err
 	}
 
 	batchCreateOrdersResponse := newCreateBatchOrdersResponse(len(rawMessages))
@@ -1076,7 +1076,7 @@ func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 		// check if response is an API error
 		e := new(common.APIError)
 		if err := json.Unmarshal(*j, e); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		if e.Code > 0 || e.Message != "" {
@@ -1086,13 +1086,13 @@ func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 
 		o := new(Order)
 		if err := json.Unmarshal(*j, o); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		batchCreateOrdersResponse.Orders = append(batchCreateOrdersResponse.Orders, o)
 	}
 
-	return batchCreateOrdersResponse, nil
+	return batchCreateOrdersResponse, rateLimits, nil
 }
 
 // ModifyOrder contains parameters for order modification request
@@ -1182,7 +1182,7 @@ func (s *ModifyBatchOrdersService) OrderList(orders []*ModifyOrder) *ModifyBatch
 // Do sends a request to modify a batch of orders.
 // It constructs the necessary parameters for each order and marshals them into a JSON payload.
 // The function returns a ModifyBatchOrdersResponse, which contains the results of the modification attempt.
-func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *ModifyBatchOrdersResponse, err error) {
+func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *ModifyBatchOrdersResponse, rateLimits map[string]string, err error) {
 	// Create a new request with method PUT and the appropriate endpoint.
 	r := &request{
 		method:   http.MethodPut,
@@ -1219,7 +1219,7 @@ func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 	// Marshal the orders into a JSON payload.
 	b, err := json.Marshal(orders)
 	if err != nil {
-		return &ModifyBatchOrdersResponse{}, err
+		return &ModifyBatchOrdersResponse{}, nil, err
 	}
 
 	// Set the marshaled orders as form parameters.
@@ -1229,16 +1229,16 @@ func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 	r.setFormParams(m)
 
 	// Call the API with the constructed request.
-	data, _, err := s.c.callAPI(ctx, r, opts...)
+	data, rateLimits, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return &ModifyBatchOrdersResponse{}, err
+		return &ModifyBatchOrdersResponse{}, nil, err
 	}
 
 	rawMessages := make([]*json.RawMessage, 0)
 	// Unmarshal the response into raw JSON messages.
 	err = json.Unmarshal(data, &rawMessages)
 	if err != nil {
-		return &ModifyBatchOrdersResponse{}, err
+		return &ModifyBatchOrdersResponse{}, nil, err
 	}
 
 	// Create a response object to hold the results.
@@ -1247,7 +1247,7 @@ func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 		// Check if the response contains an API error.
 		e := new(common.APIError)
 		if err := json.Unmarshal(*j, e); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		// If there's an error code or message, record it and continue.
@@ -1259,11 +1259,11 @@ func (s *ModifyBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 		// Otherwise, unmarshal the order information.
 		o := new(Order)
 		if err := json.Unmarshal(*j, o); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		batchModifyOrdersResponse.Orders = append(batchModifyOrdersResponse.Orders, o)
 	}
 
-	return batchModifyOrdersResponse, nil
+	return batchModifyOrdersResponse, rateLimits, nil
 }
