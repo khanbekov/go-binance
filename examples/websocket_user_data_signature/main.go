@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/adshao/go-binance/v2"
 	"github.com/google/uuid"
+	"github.com/khanbekov/go-binance/v2"
 )
 
 func main() {

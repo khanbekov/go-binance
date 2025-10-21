@@ -321,7 +321,7 @@ import (
     "os"
     "os/signal"
     "syscall"
-    "github.com/adshao/go-binance/v2"
+    "github.com/khanbekov/go-binance/v2"
 )
 
 // Handler for user data events
