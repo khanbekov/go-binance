@@ -278,6 +278,9 @@ type Client struct {
 	Logger     *log.Logger
 	TimeOffset int64
 	do         doFunc
+
+	UsedWeight common.UsedWeight
+	OrderCount common.OrderCount
 }
 
 func (c *Client) debug(format string, v ...interface{}) {
@@ -370,6 +373,10 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	if err != nil {
 		return []byte{}, nil, err
 	}
+
+	c.UsedWeight.UpdateByHeader(res.Header)
+	c.OrderCount.UpdateByHeader(res.Header)
+
 	data, err = io.ReadAll(res.Body)
 	if err != nil {
 		return []byte{}, nil, err
