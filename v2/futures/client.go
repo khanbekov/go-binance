@@ -81,6 +81,7 @@ type SelfTradePreventionMode string
 var (
 	BaseApiMainUrl    = "https://fapi.binance.com"
 	BaseApiTestnetUrl = "https://testnet.binancefuture.com"
+	BaseApiDemoURL    = "https://testnet.binancefuture.com"
 )
 
 // Global enums
@@ -92,14 +93,9 @@ const (
 	PositionSideTypeLong  PositionSideType = "LONG"
 	PositionSideTypeShort PositionSideType = "SHORT"
 
-	OrderTypeLimit              OrderType = "LIMIT"
-	OrderTypeMarket             OrderType = "MARKET"
-	OrderTypeStop               OrderType = "STOP"
-	OrderTypeStopMarket         OrderType = "STOP_MARKET"
-	OrderTypeTakeProfit         OrderType = "TAKE_PROFIT"
-	OrderTypeTakeProfitMarket   OrderType = "TAKE_PROFIT_MARKET"
-	OrderTypeTrailingStopMarket OrderType = "TRAILING_STOP_MARKET"
-	OrderTypeLiquidation        OrderType = "LIQUIDATION"
+	OrderTypeLimit       OrderType = "LIMIT"
+	OrderTypeMarket      OrderType = "MARKET"
+	OrderTypeLiquidation OrderType = "LIQUIDATION"
 
 	TimeInForceTypeGTC    TimeInForceType = "GTC"     // Good Till Cancel
 	TimeInForceTypeGTD    TimeInForceType = "GTD"     // Good Till Date
@@ -166,9 +162,10 @@ const (
 	MarginTypeIsolated MarginType = "ISOLATED"
 	MarginTypeCrossed  MarginType = "CROSSED"
 
-	ContractTypePerpetual      ContractType = "PERPETUAL"
-	ContractTypeCurrentQuarter ContractType = "CURRENT_QUARTER"
-	ContractTypeNextQuarter    ContractType = "NEXT_QUARTER"
+	ContractTypePerpetual        ContractType = "PERPETUAL"
+	ContractTypeCurrentQuarter   ContractType = "CURRENT_QUARTER"
+	ContractTypeNextQuarter      ContractType = "NEXT_QUARTER"
+	ContractTypeTradifiPerpetual ContractType = "TRADIFI_PERPETUAL"
 
 	UserDataEventTypeListenKeyExpired              UserDataEventType = "listenKeyExpired"
 	UserDataEventTypeMarginCall                    UserDataEventType = "MARGIN_CALL"
@@ -177,6 +174,7 @@ const (
 	UserDataEventTypeAccountConfigUpdate           UserDataEventType = "ACCOUNT_CONFIG_UPDATE"
 	UserDataEventTypeTradeLite                     UserDataEventType = "TRADE_LITE"
 	UserDataEventTypeConditionalOrderTriggerReject UserDataEventType = "CONDITIONAL_ORDER_TRIGGER_REJECT"
+	UserDataEventTypeAlgoUpdate                    UserDataEventType = "ALGO_UPDATE"
 
 	UserDataEventReasonTypeDeposit             UserDataEventReasonType = "DEPOSIT"
 	UserDataEventReasonTypeWithdraw            UserDataEventReasonType = "WITHDRAW"
@@ -222,6 +220,9 @@ func newJSON(data []byte) (j *simplejson.Json, err error) {
 func getApiEndpoint() string {
 	if UseTestnet {
 		return BaseApiTestnetUrl
+	}
+	if UseDemo {
+		return BaseApiDemoURL
 	}
 	return BaseApiMainUrl
 }
@@ -283,7 +284,7 @@ type Client struct {
 	OrderCount common.OrderCount
 }
 
-func (c *Client) debug(format string, v ...interface{}) {
+func (c *Client) debug(format string, v ...any) {
 	if c.Debug {
 		c.Logger.Printf(format, v...)
 	}
@@ -776,4 +777,34 @@ func (c *Client) NewGetConvertStatusService() *ConvertStatusService {
 // NewApiTradingStatusService init get api trading status service
 func (c *Client) NewApiTradingStatusService() *ApiTradingStatusService {
 	return &ApiTradingStatusService{c: c}
+}
+
+// NewCreateAlgoOrderService init create algo order service
+func (c *Client) NewCreateAlgoOrderService() *CreateAlgoOrderService {
+	return newCreateAlgoOrderService(c)
+}
+
+// NewCancelAlgoOrderService init cancel algo order service
+func (c *Client) NewCancelAlgoOrderService() *CancelAlgoOrderService {
+	return &CancelAlgoOrderService{c: c}
+}
+
+// NewCancelAllAlgoOpenOrdersService init cancel all algo open orders service
+func (c *Client) NewCancelAllAlgoOpenOrdersService() *CancelAllAlgoOpenOrdersService {
+	return &CancelAllAlgoOpenOrdersService{c: c}
+}
+
+// NewGetAlgoOrderService init get algo order service
+func (c *Client) NewGetAlgoOrderService() *GetAlgoOrderService {
+	return &GetAlgoOrderService{c: c}
+}
+
+// NewListOpenAlgoOrdersService init list open algo orders service
+func (c *Client) NewListOpenAlgoOrdersService() *ListOpenAlgoOrdersService {
+	return &ListOpenAlgoOrdersService{c: c}
+}
+
+// NewGetAllAlgoOrdersService init get all algo orders service
+func (c *Client) NewListAllAlgoOrdersService() *ListAllAlgoOrdersService {
+	return &ListAllAlgoOrdersService{c: c}
 }

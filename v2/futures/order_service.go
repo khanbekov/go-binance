@@ -785,6 +785,7 @@ func (s *CancelMultiplesOrdersService) Do(ctx context.Context, opts ...RequestOp
 		r.setFormParam("orderIdList", orderIDListString)
 	}
 	if s.origClientOrderIDList != nil {
+		// Marshal to JSON e.g. ["my_id_1","my_id_2"] (no spaces, double quotes escaped correctly).
 		jsonBytes, _ := json.Marshal(s.origClientOrderIDList)
 		r.setFormParam("origClientOrderIdList", string(jsonBytes))
 	}

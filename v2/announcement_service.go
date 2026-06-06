@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/adshao/go-binance/v2/common"
+	"github.com/khanbekov/go-binance/v2/common"
 )
 
 // CreateAnnouncementParam creates a new WsAnnouncementParam for use with WsAnnouncementServe.

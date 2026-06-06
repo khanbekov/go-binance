@@ -42,7 +42,7 @@ func FuturesOrder() {
 	orderType := futures.OrderTypeMarket
 	quantity := "0.1"
 
-	res, err := client.NewCreateOrderService().Symbol(symbol).Side(side).
+	res, _, err := client.NewCreateOrderService().Symbol(symbol).Side(side).
 		Type(orderType).Quantity(quantity).PositionSide(futures.PositionSideTypeLong).Do(context.Background())
 
 	if err != nil {

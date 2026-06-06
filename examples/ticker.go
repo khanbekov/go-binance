@@ -26,7 +26,7 @@ func Ticker() {
 
 	// futures ticker
 	futuresClient := binance.NewFuturesClient(apiKey, secret)
-	futuresTicker, err2 := futuresClient.NewListBookTickersService().Symbol("BTCUSDT").Do(context.Background())
+	futuresTicker, _, err2 := futuresClient.NewListBookTickersService().Symbol("BTCUSDT").Do(context.Background())
 	if err2 != nil {
 		fmt.Println(err2)
 		return

@@ -332,7 +332,7 @@ type Client struct {
 	OrderCount common.OrderCount
 }
 
-func (c *Client) debug(format string, v ...interface{}) {
+func (c *Client) debug(format string, v ...any) {
 	if c.Debug {
 		c.Logger.Printf(format, v...)
 	}
@@ -933,6 +933,11 @@ func (c *Client) NewCMADLQuantileService() *CMADLQuantileService {
 // NewUMFeeBurnService creates a new UMFeeBurnService
 func (c *Client) NewUMFeeBurnService() *UMFeeBurnService {
 	return &UMFeeBurnService{c: c}
+}
+
+// NewGetMarginOrderService creates a new GetMarginOrderService
+func (c *Client) NewGetMarginOrderService() *GetMarginOrderService {
+	return &GetMarginOrderService{c: c}
 }
 
 // NewGetMarginOpenOrdersService creates a new GetMarginOpenOrdersService

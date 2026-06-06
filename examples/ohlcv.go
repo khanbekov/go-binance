@@ -26,7 +26,7 @@ func Ohlcv() {
 
 	// futures ohlcv
 	futuresClient := binance.NewFuturesClient(apiKey, secret)
-	futuresOHLCV, err2 := futuresClient.NewKlinesService().Symbol("BTCUSDT").Interval("1m").Limit(5).Do(context.Background())
+	futuresOHLCV, _, err2 := futuresClient.NewKlinesService().Symbol("BTCUSDT").Interval("1m").Limit(5).Do(context.Background())
 	if err2 != nil {
 		fmt.Println(err2)
 		return
