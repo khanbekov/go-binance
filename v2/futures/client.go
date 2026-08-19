@@ -103,6 +103,7 @@ const (
 	TimeInForceTypeIOC    TimeInForceType = "IOC"     // Immediate or Cancel
 	TimeInForceTypeFOK    TimeInForceType = "FOK"     // Fill or Kill
 	TimeInForceTypeGTX    TimeInForceType = "GTX"     // Good Till Crossing (Post Only)
+	TimeInForceTypeRPI    TimeInForceType = "RPI"     // Retail Price Improvement (post-only, retail takers only)
 
 	NewOrderRespTypeACK    NewOrderRespType = "ACK"
 	NewOrderRespTypeRESULT NewOrderRespType = "RESULT"
