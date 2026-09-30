@@ -696,6 +696,11 @@ func (c *Client) NewCommissionRateService() *CommissionRateService {
 	return &CommissionRateService{c: c}
 }
 
+// NewOrderRateLimitService returns the order rate limits of the account
+func (c *Client) NewOrderRateLimitService() *OrderRateLimitService {
+	return &OrderRateLimitService{c: c}
+}
+
 // NewGetOpenInterestService init open interest service
 func (c *Client) NewGetOpenInterestService() *GetOpenInterestService {
 	return &GetOpenInterestService{c: c}
